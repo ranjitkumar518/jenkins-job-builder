@@ -1,0 +1,26 @@
+I created this file because i didn't find any solution and I am not able to create a issue in this repo. when i am trying to create a jenkins job using the
+jenkins job builder plugin using the below code for a maven build to conditional publish  to only successful prebuilds. 
+but i am getting the below error.
+
+Here is the code:
+
+    publishers:
+      - conditional-publisher:
+           condition-kind: current-status
+           condition-worst: FAILURE
+           condition-best: SUCCESS
+    action:
+      publishers:
+        - trigger-parameterized-builds:
+            - project: default_job
+              current-parameters: true
+              trigger-with-no-params: false
+         
+ Error: 
+   File "/usr/local/lib/python2.7/site-packages/jenkins_jobs/parser.py", line 352, in getXMLForJob
+    self.gen_xml(xml, data)
+  File "/usr/local/lib/python2.7/site-packages/jenkins_jobs/parser.py", line 359, in gen_xml
+    module.gen_xml(self, xml, data)
+  File "/usr/local/lib/python2.7/site-packages/jenkins_jobs/modules/builders.py", line 2019, in gen_xml
+    for builder in data[alias]:
+TypeError: 'NoneType' object is not iterable
