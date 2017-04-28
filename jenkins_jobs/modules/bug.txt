@@ -1,0 +1,171 @@
+### I didn't find the way to create a issue in this repository.
+## I am trying to create a job using jenkins job builder. I tested in my local. It is generating XML as per the yaml file.
+## when i run update command yaml configuration is not reflecting in jenkins job.
+## when i run update command yaml configuration is not reflecting in jenkins job.
+
+Yaml Configuration:
+
+- job:
+    name: 'fresh'
+    description: 'fresh maven job'
+    project-type: maven
+    parameters:
+      - string:
+         name: branch
+         default: master
+         description: "Branch Selector"
+    scm:
+      - git:
+          url: https://github.com/ranjitkumar518/myfirstrepo.git
+          branches:
+            - '${branch}'
+          credentials-id: "8e33cb7a-f49a-4b0b-a49b-e5b9ef55a3e9"
+    builders:
+      - maven-builder:
+           name: maven-3.2.1
+           pom: pom.xml
+           goals: clean package -Dmaven.test.skip=true -Pgsf2-app
+           maven-opts: -Xms1024m  -XX:PermSize=512m
+           java-opts:
+             - "-Xms512m -Xmx1024m"
+             - "-XX:PermSize=128m -XX:MaxPermSize=256m"
+      - conditional-step:
+           condition-kind: current-status
+           condition-worst: SUCCESS
+           condition-best: SUCCESS
+           steps:
+              - trigger-builds:
+                  - project: "DeployGSF2_Dev"
+                    block: true
+                    predefined-parameters:
+                      "job=${JOB_NAME}\nserver=gsf-dev5\nartifactName=itracker2"
+
+
+XML Output:
+
+
+<maven2-moduleset>\
+  <actions/>\
+  <description>fresh maven job&lt;!-- Managed by Jenkins Job Builder --&gt;</description>\
+  <keepDependencies>false</keepDependencies>\
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>\
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>\
+  <concurrentBuild>false</concurrentBuild>\
+  <canRoam>true</canRoam>\
+  <properties>\
+    <hudson.model.ParametersDefinitionProperty>\
+      <parameterDefinitions>\
+        <hudson.model.StringParameterDefinition>\
+          <name>branch</name>\
+          <description>Branch Selector</description>\
+          <defaultValue>master</defaultValue>\
+        </hudson.model.StringParameterDefinition>\
+      </parameterDefinitions>\
+    </hudson.model.ParametersDefinitionProperty>\
+  </properties>\
+  <scm class="hudson.plugins.git.GitSCM">\
+    <configVersion>2</configVersion>\
+    <userRemoteConfigs>\
+      <hudson.plugins.git.UserRemoteConfig>\
+        <name>origin</name>\
+        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>\
+        <url>https://github.com/ranjitkumar518/myfirstrepo.git</url>\
+        <credentialsId>8e33cb7a-f49a-4b0b-a49b-e5b9ef55a3e9</credentialsId>\
+      </hudson.plugins.git.UserRemoteConfig>\
+    </userRemoteConfigs>\
+    <branches>\
+      <hudson.plugins.git.BranchSpec>\
+        <name>$\{branch\}</name>\
+      </hudson.plugins.git.BranchSpec>\
+    </branches>\
+    <excludedUsers/>\
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>\
+    <disableSubmodules>false</disableSubmodules>\
+    <recursiveSubmodules>false</recursiveSubmodules>\
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>\
+    <authorOrCommitter>false</authorOrCommitter>\
+    <wipeOutWorkspace>true</wipeOutWorkspace>\
+    <pruneBranches>false</pruneBranches>\
+    <remotePoll>false</remotePoll>\
+    <gitTool>Default</gitTool>\
+    <submoduleCfg class="list"/>\
+    <relativeTargetDir/>\
+    <reference/>\
+    <gitConfigName/>\
+    <gitConfigEmail/>\
+    <skipTag>false</skipTag>\
+    <scmName/>\
+    <useShallowClone>false</useShallowClone>\
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>\
+    <extensions>\
+      <hudson.plugins.git.extensions.impl.WipeWorkspace/>\
+    </extensions>\
+  </scm>\
+  <builders>\
+    <org.jfrog.hudson.maven3.Maven3Builder>\
+      <mavenName>maven-3.2.1</mavenName>\
+      <goals>clean package -Dmaven.test.skip=true -Pgsf2-app</goals>\
+      <rootPom>pom.xml</rootPom>\
+      <mavenOpts>-Xms1024m  -XX:PermSize=512m</mavenOpts>\
+    </org.jfrog.hudson.maven3.Maven3Builder>\
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>\
+      <condition class="org.jenkins_ci.plugins.run_condition.core.StatusCondition">\
+        <worstResult>\
+          <name>SUCCESS</name>\
+          <ordinal>0</ordinal>\
+          <color>BLUE</color>\
+          <completeBuild>true</completeBuild>\
+        </worstResult>\
+        <bestResult>\
+          <name>SUCCESS</name>\
+          <ordinal>0</ordinal>\
+          <color>BLUE</color>\
+          <completeBuild>true</completeBuild>\
+        </bestResult>\
+      </condition>\
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>\
+      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder">\
+        <configs>\
+          <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>\
+            <configs>\
+              <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>\
+                <properties>job=$\{JOB_NAME\}\
+server=gsf-dev5\
+artifactName=itracker2</properties>\
+              </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>\
+            </configs>\
+            <projects>DeployGSF2_Dev</projects>\
+            <condition>ALWAYS</condition>\
+            <triggerWithNoParameters>false</triggerWithNoParameters>\
+            <buildAllNodesWithLabel>false</buildAllNodesWithLabel>\
+            <block>\
+              <buildStepFailureThreshold>\
+                <name>FAILURE</name>\
+                <ordinal>2</ordinal>\
+                <color>RED</color>\
+                <completeBuild>true</completeBuild>\
+              </buildStepFailureThreshold>\
+              <unstableThreshold>\
+                <name>UNSTABLE</name>\
+                <ordinal>1</ordinal>\
+                <color>YELLOW</color>\
+                <completeBuild>true</completeBuild>\
+              </unstableThreshold>\
+              <failureThreshold>\
+                <name>FAILURE</name>\
+                <ordinal>2</ordinal>\
+                <color>RED</color>\
+                <completeBuild>true</completeBuild>\
+              </failureThreshold>\
+            </block>\
+          </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>\
+        </configs>\
+      </buildStep>\
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>\
+  </builders>\
+  <publishers/>\
+  <buildWrappers/>\
+</maven2-moduleset>\
+}
+
+This is not reflecting in Jenkins job
